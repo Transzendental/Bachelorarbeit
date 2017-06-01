@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cmmn:definitions xmlns:dc="http://www.omg.org/spec/CMMN/20151109/DC" xmlns:di="http://www.omg.org/spec/CMMN/20151109/DI" xmlns:cmmndi="http://www.omg.org/spec/CMMN/20151109/CMMNDI" xmlns:cmmn="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/cmmn" id="Test" targetNamespace="http://bpmn.io/schema/cmmn" exporter="Camunda Modeler" exporterVersion="1.7.2">
+  <cmmn:case id="loanCase">
+    <cmmn:casePlanModel id="loanCase_" name="Kredit bewilligen">
+      <cmmn:planItem id="PlanItem_1" name="Antrag überprüfen" definitionRef="HumanTask_1a9aj7d">
+        <cmmn:itemControl id="PlanItemControl_15x11h8">
+          <cmmn:manualActivationRule id="ManualActivationRule_033lor6">
+            <cmmn:condition id="Expression_07i8r1j">${false}</cmmn:condition>
+          </cmmn:manualActivationRule>
+        </cmmn:itemControl>
+      </cmmn:planItem>
+      <cmmn:planItem id="PlanItem_1u7cq03" name="Schufa berechnen" definitionRef="HumanTask_0dsfxiv">
+        <cmmn:itemControl id="PlanItemControl_11dvucy">
+          <cmmn:manualActivationRule id="ManualActivationRule_08wulbr">
+            <cmmn:condition id="Expression_00c9r2v">${false}</cmmn:condition>
+          </cmmn:manualActivationRule>
+        </cmmn:itemControl>
+        <cmmn:exitCriterion id="EntryCriterion_0c2xg4n" sentryRef="Sentry_0an3xhk" />
+      </cmmn:planItem>
+      <cmmn:planItem id="PlanItem_1yqy29j" name="Kredit genehmigt" definitionRef="Milestone_0cr6a61">
+        <cmmn:entryCriterion id="EntryCriterion_1cutzsi" sentryRef="Sentry_0h05qff" />
+      </cmmn:planItem>
+      <cmmn:sentry id="Sentry_0h05qff">
+        <cmmn:planItemOnPart id="PlanItemOnPart_0yq4wkh" sourceRef="PlanItem_1">        <cmmn:standardEvent>complete</cmmn:standardEvent>
+</cmmn:planItemOnPart>
+        <cmmn:planItemOnPart id="PlanItemOnPart_135z4jw" sourceRef="PlanItem_1u7cq03">        <cmmn:standardEvent>complete</cmmn:standardEvent>
+</cmmn:planItemOnPart>
+        <cmmn:ifPart id="IfPart_1ew6zmy">
+          <cmmn:condition id="Expression_1on7eei"><![CDATA[${loanApproved && schufaScore > 3}]]></cmmn:condition>
+        </cmmn:ifPart>
+      </cmmn:sentry>
+      <cmmn:sentry id="Sentry_0an3xhk">
+        <cmmn:planItemOnPart id="PlanItemOnPart_1bx7i5a" sourceRef="PlanItem_1">        <cmmn:standardEvent>complete</cmmn:standardEvent>
+</cmmn:planItemOnPart>
+        <cmmn:ifPart id="IfPart_1tdyboq">
+          <cmmn:condition id="Expression_0jpmdy4">${!loanApproved}</cmmn:condition>
+        </cmmn:ifPart>
+      </cmmn:sentry>
+      <cmmn:humanTask id="HumanTask_1a9aj7d" camunda:formKey="embedded:app:forms/approveLoan.html" camunda:assignee="demo" />
+      <cmmn:humanTask id="HumanTask_0dsfxiv" name="Schufa berechnen" camunda:formKey="embedded:app:forms/addSchufaScore.html" camunda:assignee="demo" />
+      <cmmn:milestone id="Milestone_0cr6a61" name="Kredit genehmigt">
+        <cmmn:extensionElements>
+          <camunda:caseExecutionListener event="occur" class="de.accso.bpm.prak.listener.ApprovedLoanListener" />
+        </cmmn:extensionElements>
+      </cmmn:milestone>
+    </cmmn:casePlanModel>
+  </cmmn:case>
+  <cmmndi:CMMNDI>
+    <cmmndi:CMMNDiagram id="loanCmmn">
+      <cmmndi:Size xsi:type="dc:Dimension" width="500" height="500" />
+      <cmmndi:CMMNShape id="DI_CasePlanModel_1" cmmnElementRef="loanCase_">
+        <dc:Bounds x="114" y="63" width="534" height="389" />
+        <cmmndi:CMMNLabel />
+      </cmmndi:CMMNShape>
+      <cmmndi:CMMNShape id="PlanItem_1srm691_di" cmmnElementRef="PlanItem_1">
+        <dc:Bounds x="150" y="96" width="100" height="80" />
+        <cmmndi:CMMNLabel />
+      </cmmndi:CMMNShape>
+      <cmmndi:CMMNShape id="PlanItem_0iiaciv_di" cmmnElementRef="PlanItem_1u7cq03">
+        <dc:Bounds x="150" y="243" width="100" height="80" />
+        <cmmndi:CMMNLabel />
+      </cmmndi:CMMNShape>
+      <cmmndi:CMMNShape id="PlanItem_1yqy29j_di" cmmnElementRef="PlanItem_1yqy29j">
+        <dc:Bounds x="404" y="187" width="100" height="40" />
+        <cmmndi:CMMNLabel />
+      </cmmndi:CMMNShape>
+      <cmmndi:CMMNShape id="EntryCriterion_1cutzsi_di" cmmnElementRef="EntryCriterion_1cutzsi">
+        <dc:Bounds x="394" y="193" width="20" height="28" />
+        <cmmndi:CMMNLabel />
+      </cmmndi:CMMNShape>
+      <cmmndi:CMMNEdge id="PlanItemOnPart_0yq4wkh_di" cmmnElementRef="PlanItemOnPart_0yq4wkh" targetCMMNElementRef="EntryCriterion_1cutzsi" isStandardEventVisible="true">
+        <di:waypoint xsi:type="dc:Point" x="250" y="136" />
+        <di:waypoint xsi:type="dc:Point" x="322" y="136" />
+        <di:waypoint xsi:type="dc:Point" x="322" y="207" />
+        <di:waypoint xsi:type="dc:Point" x="394" y="207" />
+        <cmmndi:CMMNLabel>
+          <dc:Bounds x="297" y="161.5" width="50" height="12" />
+        </cmmndi:CMMNLabel>
+      </cmmndi:CMMNEdge>
+      <cmmndi:CMMNEdge id="PlanItemOnPart_135z4jw_di" cmmnElementRef="PlanItemOnPart_135z4jw" targetCMMNElementRef="EntryCriterion_1cutzsi" isStandardEventVisible="true">
+        <di:waypoint xsi:type="dc:Point" x="250" y="283" />
+        <di:waypoint xsi:type="dc:Point" x="322" y="283" />
+        <di:waypoint xsi:type="dc:Point" x="322" y="207" />
+        <di:waypoint xsi:type="dc:Point" x="394" y="207" />
+        <cmmndi:CMMNLabel>
+          <dc:Bounds x="297" y="235" width="50" height="12" />
+        </cmmndi:CMMNLabel>
+      </cmmndi:CMMNEdge>
+      <cmmndi:CMMNEdge id="PlanItemOnPart_1bx7i5a_di" cmmnElementRef="PlanItemOnPart_1bx7i5a" targetCMMNElementRef="EntryCriterion_0c2xg4n" isStandardEventVisible="true">
+        <di:waypoint xsi:type="dc:Point" x="200" y="176" />
+        <di:waypoint xsi:type="dc:Point" x="199" y="229" />
+        <cmmndi:CMMNLabel>
+          <dc:Bounds x="175" y="192.5" width="50" height="12" />
+        </cmmndi:CMMNLabel>
+      </cmmndi:CMMNEdge>
+      <cmmndi:CMMNShape id="ExitCriterion_0dzu97f_di" cmmnElementRef="EntryCriterion_0c2xg4n">
+        <dc:Bounds x="189" y="229" width="20" height="28" />
+        <cmmndi:CMMNLabel />
+      </cmmndi:CMMNShape>
+    </cmmndi:CMMNDiagram>
+  </cmmndi:CMMNDI>
+</cmmn:definitions>
